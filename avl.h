@@ -12,8 +12,8 @@ node *genNode(int val);
 int height(node *root);
 
 
-// --- Funcao para realizar uma busca em uma arvore ABB -- ///
-// --- recebe a raiz da arvore e o valor buscado --- ///
+// --- Funcao para realizar uma busca em uma arvore ABB -- //
+// --- recebe a raiz da arvore e o valor buscado --- //
 node *searchNode(node *root, int val);
 
 
@@ -24,12 +24,12 @@ void insertAtBST(node *root, node *leaf);
 
 // --- Funcao para remover um no em uma arvore ABB --- //
 // --- Recebe a raiz da arvore e o valor a ser removido --- //
-void removeAtBST(node *root, int val);
+node* removeAtBST(node *root, int val);
 
 
-// --- Funcao que verifica se uma arvore esta balanceada --- //
+// --- Funcao que realiza a atualizacao dos fatores de balanceamento de cada no da arvore --- //
 // --- Recebe a raiz da arvore --- //
-int isBalanced(node *root)
+void autoBalanceFactor(node *root)
 
 
 // --- Funcao que realiza uma rotacao simples a direita --- //

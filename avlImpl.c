@@ -59,3 +59,20 @@ void insertAtBST(node *root, node *leaf){
 			insertAtBST(root->right, leaf);
 	}
 }
+
+node* removeAtBST(node *root, int val){
+	if(!root){
+		return NULL;
+	if(root->left == NULL && root->right == NULL)
+}
+
+
+void autoBalanceFactor(node *root){
+	if(!root){
+		int currDiff = height(root->right) - height(root->left);
+		if(currDiff != root->balanceFactor)
+			root->balanceFactor = currDif;
+		autoBalanceFactor(root->left);
+		autoBalanceFactor(root->right);		
+	}
+}
