@@ -33,7 +33,7 @@ int main(){
 			case 3:
 				printf("\n\nType the value that you want to remove: ");
 				scanf("%d", &value);
-				removerAtBST(root, value);
+				removeAtBST(root, value);
 			break;
 			case 4:
 				printf("\nSee you later!\n");
