@@ -101,7 +101,7 @@ node *searchMaxLeft(node *leftChild){
 		return temp;
 	}
 
-	return NULL
+	return NULL;
 }
 
 void removeAtBST(node *root, int val){
@@ -120,7 +120,7 @@ void removeAtBST(node *root, int val){
 			if(nodeToBeRemoved->val < father->val)
 				father->left = NULL;
 			else
-				father->right = NULL
+				father->right = NULL;
 		}
 
 	} else if(nodeToBeRemoved->left != NULL && nodeToBeRemoved->right == NULL){
@@ -180,7 +180,7 @@ void autoBalanceFactor(node *root){
 	if(root != NULL){
 		int currDiff = height(root->right) - height(root->left);
 		if(currDiff != root->balanceFactor)
-			root->balanceFactor = currDif;
+			root->balanceFactor = currDiff;
 		autoBalanceFactor(root->left);
 		autoBalanceFactor(root->right);
 	}
@@ -204,7 +204,7 @@ node *findUnbalance(node *root){
 
 void adjustTree(node *root){
 	
-	node *unbalacedNode = findUnbalance(root);
+	node *unbalancedNode = findUnbalance(root);
 	node *father = NULL;
 
 	if(unbalancedNode != NULL){
@@ -212,7 +212,7 @@ void adjustTree(node *root){
 
 		if(unbalancedNode->balanceFactor > 1){
 			if(unbalancedNode->right->balanceFactor < 0)
-				doubleLeftRotation(father, unbalacedNode);
+				doubleLeftRotation(father, unbalancedNode);
 			else
 				simpleLeftRotation(father, unbalancedNode);
 		} else{
@@ -260,8 +260,6 @@ node *initialTree(){
 	root->right = genNode(6);
 	root->right->left = genNode(5);
 	root->right->right = genNode(7);
-
-	autoBalanceFactor(root);
 
 	return root;
 }

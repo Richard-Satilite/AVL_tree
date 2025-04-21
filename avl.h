@@ -48,12 +48,12 @@ node *searchMaxLeft(node *leftChild);
 
 // --- Funcao para remover um no em uma arvore ABB --- //
 // --- Recebe a raiz da arvore e o valor a ser removido --- //
-node* removeAtBST(node *root, int val);
+void removeAtBST(node *root, int val);
 
 
 // --- Funcao que realiza a atualizacao dos fatores de balanceamento de cada no da arvore --- //
 // --- Recebe a raiz da arvore --- //
-void autoBalanceFactor(node *root)
+void autoBalanceFactor(node *root);
 
 
 // --- Funcao que busca um no que esta desbalanceado --- //
