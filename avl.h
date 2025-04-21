@@ -1,5 +1,13 @@
+#ifndef AVL_H
+#define AVL_H
+
 // --- Struct do tipo no --- //
-typedef struct node node;
+typedef struct node{
+	int val;
+	struct node *left;
+	struct node *right;
+	int balanceFactor;
+}node;
 
 
 // --- Funcao para gerar um No --- //
@@ -48,26 +56,53 @@ node* removeAtBST(node *root, int val);
 void autoBalanceFactor(node *root)
 
 
+// --- Funcao que busca um no que esta desbalanceado --- //
+// --- Recebe a raiz da arvore --- //
+// --- Retorna NULL caso todos os nos estiverem balanceados --- //
+node *findUnbalance(node *root);
+
+
 // --- Funcao que verifica se uma arvore esta desbalanceada e chama funcoes de rotacao em caso de desbalanceamento --- //
 // --- Recebe a raiz da arvore --- //
-void adjustBalance(node *root);
+void adjustTree(node *root);
 
 
 // --- Funcao que realiza uma rotacao simples a direita --- //
-// --- Recebe a raiz da sub arvore desbalanceada --- //
-void simpleRightRotation(node *root);
+// --- Recebe o pai do no que esta desbalanceado e o no que esta desbalanceado --- //
+void simpleRightRotation(node *fatehr, node *unbalanced);
 
 
 // --- Funcao que realiza uma rotacao simples a esquerda --- //
-// --- Recebe a raiz da sub arvore desbalanceada --- //
-void simpleLeftRotation(node *root);
+// --- Recebe o pai do no que esta desbalanceado e o no que esta desbalanceado --- //
+void simpleLeftRotation(node *father, node *unbalanced);
 
 
 // --- Funcao que realiza uma rotacao composta a direta --- //
-// --- Recebe a raiz da sub arvore desbalanceada --- //
-void doubleRightRotation(node *root);
+// --- Recebe o pai do no que esta desbalanceado e o no que esta desbalanceado --- //
+void doubleRightRotation(node *father, node *unbalanced);
 
 
 // --- Funcao que realiza uma rotacao composta a esquerda --- //
-// --- Recebe a raiz da sub arvore desbalanceada --- //
-void doubleLeftRotation(node *root);
+// --- Recebe o pai do no que esta desbalanceado e o no que esta desbalanceado --- //
+void doubleLeftRotation(node *father, node *unbalanced);
+
+
+// --- Funcao que retorna a raiz de uma ABB dos itens [1,2,3,4,5,6,7] --- //
+node *initialTree();
+
+
+// --- Funcao para exibir a arvore em pre-ordem --- //
+// --- Recebe a raiz da arvore --- //
+void printPreOrder(node *root);
+
+
+// --- Funcao para exibir a arvore em ordem --- //
+// --- Recebe a raiz da arvore --- //
+void printInOrder(node *root);
+
+
+// --- Funcao para exibir a arvore em pos ordem --- //
+// --- Recebe a raiz da arvore --- //
+void printPosOrder(node *root);
+
+#endif

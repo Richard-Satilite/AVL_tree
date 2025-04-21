@@ -2,16 +2,6 @@
 #include <stdlib.h>
 #include "avl.h"
 
-typedef struct node{
-
-	int val;
-	struct node *left;
-	struct node *right;
-	int balanceFactor;
-
-}node;
-
-
 node *genNode(int val){
 
 	node *n = (node *) malloc(sizeof(node));
@@ -74,6 +64,7 @@ void insertAtBST(node *root, int val){
 			father->right = child;
 		
 		autoBalanceFactor(root);
+		adjustTree(root);
 	} else{
 		printf("\nThe value is already in the Tree!\n");
 	}
@@ -83,9 +74,13 @@ node *searchMinRight(node *rightChild){
 	if(rightChild != NULL){
 		node *temp = rightChild;
 
-		while(temp->left != NULL)
-			temp = temp->left;
-		
+		while(temp->left != NULL){
+			if(temp->left->left != NULL)
+				temp = temp->left;
+			else
+				break;
+		}
+
 		return temp;
 	}
 
@@ -96,9 +91,13 @@ node *searchMaxLeft(node *leftChild){
 	if(leftChild != NULL){
 		node *temp = leftChild;
 
-		while(temp->right != NULL)
-			temp = temp->right;
-		
+		while(temp->right != NULL){
+			if(temp->right->right != NULL)
+				temp = temp->right;
+			else
+				break;
+		}		
+
 		return temp;
 	}
 
@@ -118,7 +117,7 @@ void removeAtBST(node *root, int val){
 
 	if(nodeToBeRemoved->left == NULL && nodeToBeRemoved->right == NULL){
 		if(father != NULL){
-			if(nodeToBeRemoved-> val < father->val)
+			if(nodeToBeRemoved->val < father->val)
 				father->left = NULL;
 			else
 				father->right = NULL
@@ -126,30 +125,55 @@ void removeAtBST(node *root, int val){
 
 	} else if(nodeToBeRemoved->left != NULL && nodeToBeRemoved->right == NULL){
 		
-		node *maxLeft = searchMaxLeft(nodeToBeRemoved->left);
+		node *maxFatherLeft = searchMaxLeft(nodeToBeRemoved->left);
+		node *max;
+
+		if(maxFatherLeft->right != NULL){
+			max = maxFatherLeft->right;
+			maxFatherLeft->right = max->left;
+		}else
+			max = maxFatherLeft;
 
 		if(father != NULL){
 			if(nodeToBeRemoved->val < father->val)
-				father->left = maxLeft;
+				father->left = max;
 			else
-				father->right = maxLeft;
+				father->right = max;
 		}
+
+		if(max != maxFatherLeft)
+			max->left = nodeToBeRemoved->left;
 
 	} else{
 		
-		node *minRight = searchMinRight(nodeToBeRemoved->right);
+		node *minFatherRight = searchMinRight(nodeToBeRemoved->right);
+		node *min;
+
+		if(minFatherRight->left != NULL){
+			min = minFatherRight->left;
+			minFatherRight->left = min->right;
+		}else
+			min = minFatherRight;
 
 		if(father != NULL){
 			if(nodeToBeRemoved->val < father->val)
-				father->left = minRight;
+				father->left = min;
 			else
-				father->right = minRight;
+				father->right = min;
 		}
 
+		if(min != minFatherRight)
+			min->right = nodeToBeRemoved->right;
+
+		if(nodeToBeRemoved->left != NULL)
+			min->left = nodeToBeRemoved->left;
 	}
 
+	nodeToBeRemoved->left = NULL;
+	nodeToBeRemoved->right = NULL;
 	free(nodeToBeRemoved);
 	autoBalanceFactor(root);
+	adjustTree(root);
 }
 
 void autoBalanceFactor(node *root){
@@ -162,31 +186,106 @@ void autoBalanceFactor(node *root){
 	}
 }
 
+node *findUnbalance(node *root){
 
-void adjustBalance(node *root){
 	if(root == NULL)
-		return;
+		return NULL;
 
-	if(root->balanceFactor > -2 && root->balanceFactor < 2){
-		adjustBalance(root->left);
-		adjustBalance(root->right);
-	} else{
+	if(root->balanceFactor < -1 || root->balanceFactor > 1)
+		return root;
 
-		if(root->balanceFactor > 1){
-			if(root->right->balanceFactor < 0)
-				//Rotacao dupla a esquerda
-			else	
-				//Rotacao simples a esquerda
-		} else{
-			if(root->left->balanceFactor > 0)
-				//Rotacao dupla a direita
+	node *leftSearch = findUnbalance(root->left);
+
+	if(leftSearch != NULL)
+		return leftSearch;
+
+	return findUnbalance(root->right);
+}
+
+void adjustTree(node *root){
+	
+	node *unbalacedNode = findUnbalance(root);
+	node *father = NULL;
+
+	if(unbalancedNode != NULL){
+		father = searchFather(root, unbalancedNode->val);
+
+		if(unbalancedNode->balanceFactor > 1){
+			if(unbalancedNode->right->balanceFactor < 0)
+				doubleLeftRotation(father, unbalacedNode);
 			else
-				//Rotcao simples a direita
+				simpleLeftRotation(father, unbalancedNode);
+		} else{
+			if(unbalancedNode->left->balanceFactor > 0)
+				doubleRightRotation(father, unbalancedNode);
+			else
+				simpleRightRotation(father, unbalancedNode);
 		}
 	}
 }
 
-void simpleRightRotation(node *root){
-	
+void simpleRightRotation(node *father, node *unbalanced){
+	node *newFather = unbalanced->left;
+	unbalanced->left = newFather->right;
+	newFather->right = unbalanced;
+
+	if(father != NULL)
+		father->left = newFather;
 }
 
+void simpleLeftRotation(node *father, node *unbalanced){
+	node *newFather = unbalanced->right;
+	unbalanced->right = newFather->left;
+	newFather->left = unbalanced;
+
+	if(father != NULL)
+		father->right = newFather;
+}
+
+void doubleRightRotation(node *father, node* unbalanced){
+	simpleLeftRotation(NULL, unbalanced->left);
+	simpleRightRotation(father, unbalanced);
+}
+
+void doubleLeftRotation(node *father, node *unbalanced){
+	simpleRightRotation(NULL, unbalanced->right);
+	simpleLeftRotation(father, unbalanced);
+}
+
+node *initialTree(){
+	node *root = genNode(4);
+	root->left = genNode(2);
+	root->left->left = genNode(1);
+	root->left->right = genNode(3);
+	root->right = genNode(6);
+	root->right->left = genNode(5);
+	root->right->right = genNode(7);
+
+	autoBalanceFactor(root);
+
+	return root;
+}
+
+void printPreOrder(node *root){
+	if(root != NULL){
+		printf("%d -> ", root->val);
+		printPreOrder(root->left);
+		printPreOrder(root->right);
+	}
+}
+
+void printInOrder(node *root){
+	if(root != NULL){
+		printInOrder(root->left);
+		printf("%d -> ", root->val);
+		printInOrder(root->right);
+	}
+}
+
+void printPosOrder(node *root){
+	if(root != NULL){
+		printPosOrder(root->left);
+		printPosOrder(root->right);
+		printf("%d -> ", root->val);
+	}
+}
