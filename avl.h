@@ -33,7 +33,7 @@ node *searchFather(node *root, int val);
 
 // --- Funcao para inserir um no em uma arvore ABB --- //
 // --- Recebe a raiz da arvore e o valor do no a ser inserido --- //
-void insertAtBST(node *root, int val);
+node* insertAtBST(node *root, int val);
 
 
 // --- Funcao que obtem o menor no a direita de um no pai --- //
@@ -48,7 +48,7 @@ node *searchMaxLeft(node *leftChild);
 
 // --- Funcao para remover um no em uma arvore ABB --- //
 // --- Recebe a raiz da arvore e o valor a ser removido --- //
-void removeAtBST(node *root, int val);
+node* removeAtBST(node *root, int val);
 
 
 // --- Funcao que realiza a atualizacao dos fatores de balanceamento de cada no da arvore --- //
@@ -64,17 +64,17 @@ node *findUnbalance(node *root);
 
 // --- Funcao que verifica se uma arvore esta desbalanceada e chama funcoes de rotacao em caso de desbalanceamento --- //
 // --- Recebe a raiz da arvore --- //
-void adjustTree(node *root);
+node* adjustTree(node *root);
 
 
 // --- Funcao que realiza uma rotacao simples a direita --- //
 // --- Recebe o pai do no que esta desbalanceado e o no que esta desbalanceado --- //
-void simpleRightRotation(node *fatehr, node *unbalanced);
+node* simpleRightRotation(node *fatehr, node *unbalanced);
 
 
 // --- Funcao que realiza uma rotacao simples a esquerda --- //
 // --- Recebe o pai do no que esta desbalanceado e o no que esta desbalanceado --- //
-void simpleLeftRotation(node *father, node *unbalanced);
+node* simpleLeftRotation(node *father, node *unbalanced);
 
 
 // --- Funcao que realiza uma rotacao composta a direta --- //

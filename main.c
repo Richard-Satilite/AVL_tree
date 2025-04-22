@@ -6,7 +6,7 @@ int main(){
 	int n, value;
 	node *root = initialTree();
 
-	printf("\nInitial Tree\n\n");
+	printf("\nInitial Tree (In-order view)\n\n");
 	printInOrder(root);
 
 	do{
@@ -16,6 +16,9 @@ int main(){
 
 		switch(n){
 			case 1:
+	
+				printf("\nLook for the subtrees roots, if they change, this means that a rotation was applied!\n\n");				
+
 				printf("\n\nPre-order view:\n");
 				printPreOrder(root);
 
@@ -28,12 +31,12 @@ int main(){
 			case 2:
 				printf("\n\nType the value that you want to add: ");
 				scanf("%d", &value);
-				insertAtBST(root, value);
+				root = insertAtBST(root, value);
 			break;
 			case 3:
 				printf("\n\nType the value that you want to remove: ");
 				scanf("%d", &value);
-				removeAtBST(root, value);
+				root = removeAtBST(root, value);
 			break;
 			case 4:
 				printf("\nSee you later!\n");

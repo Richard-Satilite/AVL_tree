@@ -36,23 +36,22 @@ node *searchNode(node *root, int val){
 }
 
 node *searchFather(node *root, int val){
-	if(root == NULL){
-		printf("\nEmpty tree!\n");
+	if(root == NULL || root->val == val){
 		return NULL;
 	}
 	
 	if(val < root->val){
-		if(root->left->val == val || root->left == NULL)
+		if(root->left == NULL || root->left->val == val)
 			return root;
 		return searchFather(root->left, val);
 	} else if(val > root->val){
-		if(root->right->val == val || root->right == NULL)
+		if(root->right == NULL || root->right->val == val)
 			return root;
 		return searchFather(root->right, val);
 	}
 }
 
-void insertAtBST(node *root, int val){
+node* insertAtBST(node *root, int val){
 	if(searchNode(root, val) == NULL){
 
 		node *father = searchFather(root, val);
@@ -64,10 +63,12 @@ void insertAtBST(node *root, int val){
 			father->right = child;
 		
 		autoBalanceFactor(root);
-		adjustTree(root);
+		return adjustTree(root);
 	} else{
 		printf("\nThe value is already in the Tree!\n");
 	}
+
+	return root;
 }
 
 node *searchMinRight(node *rightChild){
@@ -104,7 +105,7 @@ node *searchMaxLeft(node *leftChild){
 	return NULL;
 }
 
-void removeAtBST(node *root, int val){
+node* removeAtBST(node *root, int val){
 	
 	node *nodeToBeRemoved = searchNode(root, val);
 	node *father = NULL;
@@ -113,7 +114,7 @@ void removeAtBST(node *root, int val){
 		father = searchFather(root, val);
 
 	if(nodeToBeRemoved == NULL)
-		return;
+		return root;
 
 	if(nodeToBeRemoved->left == NULL && nodeToBeRemoved->right == NULL){
 		if(father != NULL){
@@ -173,7 +174,8 @@ void removeAtBST(node *root, int val){
 	nodeToBeRemoved->right = NULL;
 	free(nodeToBeRemoved);
 	autoBalanceFactor(root);
-	adjustTree(root);
+
+	return adjustTree(root);
 }
 
 void autoBalanceFactor(node *root){
@@ -202,53 +204,72 @@ node *findUnbalance(node *root){
 	return findUnbalance(root->right);
 }
 
-void adjustTree(node *root){
+node *adjustTree(node *root){
+
+	node *unbalancedNode;
+
+	do{
+		unbalancedNode = findUnbalance(root);
+		node *father = NULL;
+
+		if(unbalancedNode != NULL){
+			father = searchFather(root, unbalancedNode->val);
+
+			if(unbalancedNode->balanceFactor > 1){
 	
-	node *unbalancedNode = findUnbalance(root);
-	node *father = NULL;
+				if(father == NULL)
+					root = unbalancedNode->right;
 
-	if(unbalancedNode != NULL){
-		father = searchFather(root, unbalancedNode->val);
+				if(unbalancedNode->right->balanceFactor < 0)
+					doubleLeftRotation(father, unbalancedNode);
+				else
+					simpleLeftRotation(father, unbalancedNode);
+			} else{
+				if(father == NULL)
+					root = unbalancedNode->left;
 
-		if(unbalancedNode->balanceFactor > 1){
-			if(unbalancedNode->right->balanceFactor < 0)
-				doubleLeftRotation(father, unbalancedNode);
-			else
-				simpleLeftRotation(father, unbalancedNode);
-		} else{
-			if(unbalancedNode->left->balanceFactor > 0)
-				doubleRightRotation(father, unbalancedNode);
-			else
-				simpleRightRotation(father, unbalancedNode);
+				if(unbalancedNode->left->balanceFactor > 0)
+					doubleRightRotation(father, unbalancedNode);
+				else
+					simpleRightRotation(father, unbalancedNode);
+			}
+			
+			autoBalanceFactor(root);
 		}
-	}
+	}while(unbalancedNode != NULL);
+
+	return root;
 }
 
-void simpleRightRotation(node *father, node *unbalanced){
+node* simpleRightRotation(node *father, node *unbalanced){
 	node *newFather = unbalanced->left;
 	unbalanced->left = newFather->right;
 	newFather->right = unbalanced;
 
 	if(father != NULL)
 		father->left = newFather;
+	
+	return newFather;
 }
 
-void simpleLeftRotation(node *father, node *unbalanced){
+node* simpleLeftRotation(node *father, node *unbalanced){
 	node *newFather = unbalanced->right;
 	unbalanced->right = newFather->left;
 	newFather->left = unbalanced;
 
 	if(father != NULL)
 		father->right = newFather;
+
+	return newFather;
 }
 
 void doubleRightRotation(node *father, node* unbalanced){
-	simpleLeftRotation(NULL, unbalanced->left);
+	unbalanced->left = simpleLeftRotation(NULL, unbalanced->left);
 	simpleRightRotation(father, unbalanced);
 }
 
 void doubleLeftRotation(node *father, node *unbalanced){
-	simpleRightRotation(NULL, unbalanced->right);
+	unbalanced->right = simpleRightRotation(NULL, unbalanced->right);
 	simpleLeftRotation(father, unbalanced);
 }
 
